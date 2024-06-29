@@ -1,78 +1,75 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.*;
 
 import java.util.List;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
-    private RoleService roleService;
-    private UserService userService;
 
+    private final UserServiceImp userService;
+    private final RoleService roleService;
+
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+
+        return new HiddenHttpMethodFilter();
+    }
 
     @Autowired
-    public AdminController(RoleService roleService, UserService userService) {
-        this.roleService = roleService;
+    public AdminController(UserServiceImp userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
-    @GetMapping("/")
-    public String getAllShowUsers(Model model) {
-        List<Role> roles = roleService.allRoles();
-        model.addAttribute("allUsers", userService.allUsers());
-        model.addAttribute("role", roles);
-        return "allUsers";
+    @GetMapping("/admin")  //Отображает список пользователей в административной панели
+    public String showListUsers(Model model) {
+        List<User> users = userService.listUsers();
+        model.addAttribute("users", users);
+        return "admin";
     }
 
-    @PostMapping("/search")
-    public String searchUserId(@RequestParam Long id, Model model) {
-        User user = userService.getUserId(id);
+    @GetMapping("/admin/new")  //Отображает форму добавления нового пользователя
+    public String showAddUserForm(Model model) {
+        User user = new User();
         model.addAttribute("user", user);
-        return "showUserId";
+        model.addAttribute("allRoles", roleService.listRoles());
+        return "addUser";
     }
 
-    @GetMapping("/addUser")
-    public String newPerson(@ModelAttribute("user") User user) {
-
-
-        return "/addUser";
-    }
-
-    @PostMapping("/")
+    @PostMapping("/admin/add")  //Обрабатывает запрос на добавление нового пользователя
     public String addUser(@ModelAttribute("user") User user) {
-        userService.addUser(user);
-        return "redirect:/admin/";
+        userService.add(user);
+        return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editUserForm(ModelMap model, @PathVariable("id") Long id) {
-        model.addAttribute("user", userService.getUserId(id));
-        model.addAttribute("roles", roleService.allRoles());
-        return "edit";
+    @GetMapping("/admin/edit")  //Отображает форму редактирования пользователя по его ID
+    public String showEditUserForm(@RequestParam("id") Long id, Model model) {
+        User user = userService.findById(id);
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", roleService.listRoles());
+        return "editUser";
     }
 
-    @PutMapping("/{id}")
-    public String editUser(@ModelAttribute("user") User user,
-                           BindingResult bindingResult, @PathVariable("id") Long id) {
-        if (bindingResult.hasErrors())
-            return "/edit";
-        userService.updateUser(user);
-        return "redirect:/admin/";
+    @PutMapping("/admin/update")  //Обрабатывает запрос на обновление информации о пользователе
+    public String updateUser(@ModelAttribute("user") User user) {
+        userService.update(user);
+        return "redirect:/admin";
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
-        return "redirect:/admin/";
+    @DeleteMapping("/admin/delete")  //Обрабатывает запрос на удаление пользователя по его ID.
+    public String deleteUser(@RequestParam("id") Long id) {
+        userService.delete(id);
+        return "redirect:/admin";
     }
 }

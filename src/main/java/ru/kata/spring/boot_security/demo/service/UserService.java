@@ -4,10 +4,13 @@ import ru.kata.spring.boot_security.demo.model.User;
 import java.util.List;
 
 public interface UserService {
-    public List<User> allUsers();
-    public User getUserId(Long id);
-    public void addUser(User user);
-    public void updateUser(User user);
-    public void deleteUser(Long id);
-    public User getUserByUsername(String username);
+    void add(User user);
+
+    void update(User user);
+
+    void delete(Long id);
+
+    User findById(Long id);
+
+    List<User> listUsers();
 }

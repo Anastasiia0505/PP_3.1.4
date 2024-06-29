@@ -1,14 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-  <title>User Page</title>
+    <meta charset="UTF-8">
+    <title>UserInfo</title>
 </head>
-<body>
-<h1>Welcome <span th:text="${user.name}"></span>!</h1>
-<p>surname: <span th:text="${user.surname}"></span></p>
-<p>Salary: <span th:text="${user.salary}"></span></p>
-<p>username: <span th:text="${user.username}"></span></p>
-<p>password: <span th:text="${user.password}"></span></p>
 
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Salary</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Roles</th>
+    </tr>
+    </thead>
+    <tbody>
+    <td th:text="${user.id}"></td>
+    <td th:text="${user.name}"></td>
+    <td th:text="${user.surname}"></td>
+    <td th:text="${user.salary}"></td>
+    <td th:text="${user.username}"></td>
+    <td th:text="${user.password}"></td>
+    <td>
+        <ul>
+            <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
+        </ul>
+    </td>
+    </tbody>
+</table>
+<form th:action="@{/logout}" method="post" class="logout-form">
+    <button type="submit">Logout</button>
+</form>
 </body>
 </html>
