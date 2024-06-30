@@ -7,7 +7,6 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
-
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +39,6 @@ public class DataInitializer {
         User userUser1 = new User("user", passwordEncoder.encode("user"));
         userUser1.setRoles(Collections.singleton(userRole));
         userRepository.save(userUser1);
-
 
     }
 }
