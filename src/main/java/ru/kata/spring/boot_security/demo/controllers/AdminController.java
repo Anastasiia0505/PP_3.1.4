@@ -7,11 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.*;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImp;
 
 import java.util.List;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-
 
 @Controller
 public class AdminController {
